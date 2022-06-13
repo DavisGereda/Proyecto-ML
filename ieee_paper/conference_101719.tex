@@ -1,0 +1,105 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Predicción de aceptación de cupones para viajeros con modelos de clasificación}
+%{\footnotesize \textsuperscript{*}Note: Sub-titles are not captured in Xplore and
+%should not be used}
+%\thanks{Identify applicable funding agency here. If none, delete this.}
+%}
+
+\author{\IEEEauthorblockN{Davis Gereda}
+\IEEEauthorblockA{\textit{Escuela de Posgrado} \\
+\textit{Pontificia Universidad Católica del}\\
+\textit{Perú}\\
+Lima, Per\'u \\
+davis.gereda@pucp.edu.pe}
+\and
+\IEEEauthorblockN{Josue Mauricio}
+\IEEEauthorblockA{\textit{Escuela de Posgrado} \\
+\textit{Pontificia Universidad Católica del}\\
+\textit{Perú}\\
+Lima, Per\'u \\
+a20224110@pucp.edu.pe}
+\and
+\IEEEauthorblockN{Iv\'an Le\'on}
+\IEEEauthorblockA{\textit{Escuela de Posgrado} \\
+\textit{Pontificia Universidad Católica del}\\
+\textit{Perú}\\
+Lima, Per\'u \\
+ivan.leong@pucp.edu.pe}
+}
+
+\maketitle
+
+\begin{abstract}
+El presente trabajo realizará un estudio del uso de distintos modelos de clasificación, entre ellos Árbol de Decisión, KNN, Random Forest, XGBoost, Clasificación Logística y SVM. El principal objetivo es mostrar las ventajas que brinda el uso de estos modelos de clasificación en la aceptación de cupones por sistemas de recomendación, específicamente en usuarios de un vehículo. Con la retroalimentación de los resultados de la predicción hecha con estos modelos, se busca que los expertos en ventas puedan utilizar esta herramienta para ofrecer mejores ofertas y mejorar la publicidad de los productos recomendados para cada cliente.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Machine Learning, Modelos de clasificación, Sistemas de Recomendación
+\end{IEEEkeywords}
+
+\section{Introducción}
+Los sistemas de recomendación se ha convertido en herramientas importantes dentro de la industria del marketing, ya que con el tiempo distintas empresas de cualquier categoría hacen uso del beneficio de estos para mejorar las ventas y explorar en lo que desea o necesita un cliente. Dentro de los sistemas de recomendación surgen ciertas heurísticas con respecto al usuario que decidirá acerca de un producto recomendado. Un concepto importante es que la empatía es vital en sistemas orientados a seres humanos para la resolución de problemas, entendimiento mutuo y relaciones sostenibles \cite{b1}. Por ello los sistemas buscarán acertar las necesidades de un cliente generando una relación entre las recomendaciones realizadas por el sistema y la aceptación del cliente. Actualmente, compañías como Google, Amazon y Netflix hacen uso de sistemas de recomendación por medio de publicidad, networking y películas.
+
+El objetivo de este estudio es mostrar las ventajas del uso de modelos de clasificación que ayuden a los sistemas de recomendación a mejorar las estrategias de recomendación y su eficiencia con respecto a la aceptación de los usuarios. Específicamente, se usará el conjunto de datos \textit{in-vehicle coupon recommendation}\cite{b2} proporcionado por el repositorio de Aprendizaje Automático de la  Universidad de California Irvine (UCI) el cual contiene 12,684 registros etiquetados de forma binaria por la variable objetivo 'Y' con valores 0 y 1. Se propone el uso de los siguientes modelos de clasificación: Árboles de decisión, Random Forest, XGBoost, Clasificación Logística, KNN y SVM. Se mostrará en tablas comparativas los resultados de la precisión y métricas de los modelos con los datos anteriormente presentados.
+
+La estructura de este artículo es la siguiente: En la sección 2 se explicará el estado del arte, que revisará los distintos estudios realizados en la literatura. La sección 3 se encargará de mostrar el diseño del experimento, describiendo uno a uno los datos utilizados, también se presentará la metodología utilizada para el preprocesamiento de los datos, entrenamiento y ajuste de los modelos de clasificación propuestos. En la sección 4, se muestra la experimentación y resultados, donde se presentará en tablas comparativas los resultados de nuestra experimentación, adicionalmente se expondrá la visualización de las métricas de clasificación mediante gráficos. La sección 5, encargado de la discusión de los resultados expuestos en la sección 4. Por último, se presentarán las conclusiones de nuestro artículo.
+
+\section{Estado del Arte}
+
+En la literatura, se han realizado estudios que evaluan modelos de clasificación para mejorar la predicción respecto a sistemas de recomendación. Boteju, P. \cite{b3}, presenta un estudio basado en un sistema de recomendación de vehículos, que ayuda a un usuario a decidir sobre la compra de un vehículo. Concluye que los modelos de redes neuronales son más eficientes que modelos Random Forest y Regresión logística de clasificación múltiple, logrando cerca de un 96.23\% de precisión en los datos de validación.
+
+Con respecto a los datos, Tong Wang\cite{b2}, introduce el modelo conjunto de reglas basado en reglas bayesianas. Logrando una precisión del 77\%, mucho mejor en comparación de otros modelos de regresión como CART, Lasso y RIPPER. Tran Duc\cite{b4}, hace un estudio de rendimiento de los modelos Árbol de Decisión, Random Forest, Máquina de Vectores de Soporte (SVM), Redes Neuronales de Avance (MLP), Regresión Logística, Bagging, AdaBoost y XGBoost. Para el entrenamiento de los modelos se crearon 4 subconjunto de datos de los cuales fueron sometidos a un pre-procesamiento usando 2 métodos para completar los datos faltantes, los métodos empleados fueron Mode Imputing y Random Forest Imputing. Asimismo, para el pre-procesamiento se empleó el escalado de datos usando Min-Max solo para dos subconjuntos dejando los dos restantes sin escalado de datos. Concluye una exactitud que se encuentra en el rango de 68\% a 76\%. El modelo sugerido para obtener los mejores resultados de rendimiento es el modelo de ensamble Bagging con el estimador base Random Forest, esta sugerencia del estudio analizado nos brinda un importante punto de partida para iniciar nuestra experimentación en busca del mejor resultado. Enes Çelik\cite{b5}, realiza una comparación de distintos modelos de clasificación con respecto a los datos de \cite{b2}, teniendo el mejor rendimiento con el modelo LightGBM, un modelo basado en Gradient Boosting. Con este modelo se alcanzó un 75\% de precisión, en general se concluye que los modelos de Gradient Boosting logran tiempos cortos de procesamiento, mientras que otros modelos como SVM son mucho más lentos. D. R. Hermawan\cite{b6}, realiza un estudio comparativo entre modelos de clasificación de árboles de decisión para determinar la aceptación de cupones utilizando los algoritmos J48, Árboles de decisión y Random Forest. Se concluye de los estudios mencionados anteriormente que el modelo Random Forest obtuvo una precisión de 77.09\%, el cual fue el modelo base propuesto por el autor. P. Pokhrel\cite{b7}, al igual que \cite{b5}, concluye que los modelos basados en ensable por Gradient Boosting tienen mejor rendimiento que otros modelos, mejorando la precisión de los modelos. De hecho, se tomarán las experimentaciones de estos artículos para implementar nuestras comparaciones entre modelos, y decidiremos cual de estos modelos tendrá una mejor precisión.
+
+
+\section{Diseño del Experimento}
+
+
+\subsection{Descripción del conjunto de datos}
+
+
+\subsection{Metodología}
+
+
+\subsubsection{Pre-Procesamiento de datos}
+
+
+\subsubsection{Selección y extracción de características}
+
+
+\subsubsection{Selección y justificación de la medida de calidad}
+
+
+\subsubsection{Algoritmos y estrategias de ajuste}
+
+
+\subsubsection{Estrategia de validación}
+
+\section{Experimentación y Resultados}
+
+\section{Discusión}
+
+\section{Conclusiones}
+
+\begin{thebibliography}{00}
+\bibitem{b1} A. S. Raamkumar and Y. Yang, Empathetic Conversational Systems: A Review of Current Advances, Gaps, and Opportunities. arXiv, 2022. doi: 10.48550/ARXIV.2206.05017.
+\bibitem{b2} Wang, Tong, Cynthia Rudin, Finale Doshi-Velez, Yimin Liu, Erica Klampfl, and Perry MacNeille. 'A bayesian framework for learning rule sets for interpretable classification.' The Journal of Machine Learning Research 18, no. 1 (2017): 2357-2393.
+\bibitem{b3} P. Boteju and L. Munasinghe, “Vehicle Recommendation System using Hybrid Recommender Algorithm and Natural Language Processing Approach,” in 2020 2nd International Conference on Advancements in Computing (ICAC), 2020, vol. 1, pp. 386–391. doi: 10.1109/ICAC51239.2020.9357156.
+\bibitem{b4} Tran Duc Quynh and Hoang Thi Thuy Dung. “Prediction of Customer Behavior using Machine Learning: A Case Study”. http://ceur-ws.org/Vol-3026/paper18.pdf (accedido may. 2022).
+\bibitem{b5} E. Celik and S. Omurca, “Comparative Analysis of Offline Recommendation Systems with Machine Learning Algorithms,” Jun. 2021.
+\bibitem{b6} D. R. Hermawan, M. Fahrio Ghanial Fatihah, L. Kurniawati, and A. Helen, “Comparative Study of J48 Decision Tree Classification Algorithm, Random Tree, and Random Forest on In-Vehicle CouponRecommendation Data,” in 2021 International Conference on Artificial Intelligence and Big Data Analytics, 2021, pp. 1–6. doi: 10.1109/ICAIBDA53487.2021.968970.
+\bibitem{b7} P. Pokhrel and A. Lazar, “Towards Machine Learning Interpretability for Tabular Data with Mixed Data Types”, FLAIRS, vol. 35, May 2022.
+\end{thebibliography}
+
+\end{document}
